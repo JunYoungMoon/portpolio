@@ -1,0 +1,24 @@
+server:
+  port: 19093
+
+spring:
+  application:
+    name: portfolio
+
+  datasource:
+    url: ${DB_HOST}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_NAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    show-sql: true  # 🔥 SQL 쿼리 출력
+    properties:
+      hibernate:
+        show-sql: true
+        format-sql: true
+        highlight_sql: true  # 🔥 SQL 하이라이팅
+        default_batch_fetch_size: 10  # 배치 사이즈 설정
+
+#    hibernate:
+#      ddl-auto: create
