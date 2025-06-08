@@ -15,6 +15,35 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    // 한 사용자의 여러 지갑 조회 (N+1 문제 없음)
+    public void demonstrateSingleUserMultipleWallets() {
+        System.out.println("\n=== 📍 비교: 한 사용자의 여러 지갑 조회 (N+1 문제 없음) ===");
+
+        // 1. 첫 번째 사용자만 조회 (1번 쿼리)
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            System.out.println("사용자가 없습니다.");
+            return;
+        }
+
+        User firstUser = users.get(0);
+        System.out.println("조회된 사용자: " + firstUser.getUsername());
+
+        // 2. 이 한 사용자의 모든 지갑 조회 (1번 쿼리)
+        List<UserBalance> balances = firstUser.getUserBalances();
+        System.out.println("이 사용자의 총 지갑 개수: " + balances.size());
+
+        // 3. 각 지갑 정보 출력 (추가 쿼리 없음!)
+        System.out.println("각 지갑 정보:");
+        balances.forEach(balance -> {
+            System.out.println("  - 지갑: " + balance.getWallet() + ", 잔액: " + balance.getTotalBalance());
+            // 이미 로딩된 데이터이므로 추가 쿼리 실행 안됨
+        });
+
+        System.out.println("총 실행된 쿼리: 2번 (User 조회 1번 + UserBalance 조회 1번)");
+        System.out.println("=== 한 사용자 지갑 조회 완료 (N+1 문제와 무관) ===\n");
+    }
+
     // ❌ N+1 문제가 발생하는 메서드
     public void demonstrateNPlusOneProblem() {
         System.out.println("\n=== ❌ N+1 문제 발생 케이스 ===");

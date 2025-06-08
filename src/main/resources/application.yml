@@ -18,7 +18,7 @@ spring:
         show-sql: true
         format-sql: true
         highlight_sql: true  # 🔥 SQL 하이라이팅
-        default_batch_fetch_size: 10  # 배치 사이즈 설정
+#        default_batch_fetch_size: 10  # 배치 사이즈 설정
 
 #    hibernate:
 #      ddl-auto: create

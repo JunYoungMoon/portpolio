@@ -16,6 +16,17 @@ public class UserController {
         this.userService = userService;
     }
 
+    // 한 사용자의 여러 지갑 조회
+    @GetMapping("/single-user-wallets")
+    public ResponseEntity<String> demonstrateSingleUserWallets() {
+        try {
+            userService.demonstrateSingleUserMultipleWallets();
+            return ResponseEntity.ok("한 사용자의 여러 지갑 조회 완료 - N+1 문제와 무관함을 확인하세요");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("에러 발생: " + e.getMessage());
+        }
+    }
+
     // 기존 엔드포인트 (호환성)
     @GetMapping("/n-plus-one-problem")
     public ResponseEntity<String> demonstrateNPlusOne() {
