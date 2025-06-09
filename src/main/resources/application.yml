@@ -11,6 +11,11 @@ spring:
     username: ${DB_NAME}
     password: ${DB_PASSWORD}
 
+  r2dbc:
+    url: ${R2DB_HOST}
+    username: ${DB_NAME}
+    password: ${DB_PASSWORD}
+
   jpa:
     show-sql: true  # 🔥 SQL 쿼리 출력
     properties:
@@ -18,7 +23,28 @@ spring:
         show-sql: true
         format-sql: true
         highlight_sql: true  # 🔥 SQL 하이라이팅
-#        default_batch_fetch_size: 10  # 배치 사이즈 설정
 
-#    hibernate:
-#      ddl-auto: create
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true  # 다시 true로 설정
+#    baseline-version: 0        # baseline 버전을 0으로 설정
+
+payment:
+  pg:
+    code: "YOUR_PG_CODE"
+    client-id: "YOUR_CLIENT_ID"
+    key: "YOUR_PG_KEY"
+#    url: "https://your-pg-url.com"
+    url: "http://localhost:19093/mock/pg"  # 자기 자신으로 요청
+  base-url: "https://kn.sgmchain.com"
+
+app:
+  server-port: 8080
+  salt: "test-secret-salt-12345"
+  target-address: "your-hls-server-ip"  # 실제 HLS 서버 주소
+  target-port: 3041
+  target-path: "hls"  # 필요에 따라 조정
+  my-address: "http://localhost:8080"
+  use-encrypt: true
+  use-original: false

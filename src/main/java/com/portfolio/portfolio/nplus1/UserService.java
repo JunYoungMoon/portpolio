@@ -1,5 +1,8 @@
 package com.portfolio.portfolio.nplus1;
 
+import com.portfolio.portfolio.nplus1.repository.jpa.User;
+import com.portfolio.portfolio.nplus1.repository.jpa.UserBalance;
+import com.portfolio.portfolio.nplus1.repository.jpa.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

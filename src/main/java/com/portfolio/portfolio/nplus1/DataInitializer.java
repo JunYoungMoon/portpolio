@@ -1,5 +1,9 @@
 package com.portfolio.portfolio.nplus1;
 
+import com.portfolio.portfolio.nplus1.repository.jpa.User;
+import com.portfolio.portfolio.nplus1.repository.jpa.UserBalance;
+import com.portfolio.portfolio.nplus1.repository.jpa.UserBalanceRepository;
+import com.portfolio.portfolio.nplus1.repository.jpa.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +23,7 @@ public class DataInitializer {
     }
 
     @PostConstruct
-    @Transactional
+    @Transactional(transactionManager = "jpaTransactionManager")
     public void initializeData() {
         // 기존 데이터가 있으면 초기화하지 않음
         if (userRepository.count() > 0) {

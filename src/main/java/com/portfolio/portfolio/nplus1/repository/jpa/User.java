@@ -1,4 +1,4 @@
-package com.portfolio.portfolio.nplus1;
+package com.portfolio.portfolio.nplus1.repository.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;
