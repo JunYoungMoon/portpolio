@@ -24,7 +24,8 @@ import java.util.Map;
 @EnableJpaAuditing
 @EnableJpaRepositories(
         basePackages = {
-                "com.portfolio.portfolio.nplus1.repository.jpa"
+                "com.portfolio.portfolio.nplus1.repository.jpa",
+                "com.portfolio.portfolio.ddd.infrastructure.repository"
         },
         transactionManagerRef = "jpaTransactionManager"
 )
@@ -72,7 +73,10 @@ public class JpaConfig {
             DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.portfolio.portfolio.nplus1.repository.jpa")
+                .packages(
+                        "com.portfolio.portfolio.nplus1.repository.jpa",
+                        "com.portfolio.portfolio.ddd.domain.model.entity"
+                )
                 .persistenceUnit("default")
                 .build();
     }
