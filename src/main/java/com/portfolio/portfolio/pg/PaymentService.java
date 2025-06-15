@@ -1,6 +1,5 @@
 package com.portfolio.portfolio.pg;
 
-import com.portfolio.portfolio.nplus1.repository.jpa.UserRepository;
 import com.portfolio.portfolio.pg.dto.CancelRequestDto;
 import com.portfolio.portfolio.pg.dto.PaygateRequestDto;
 import com.portfolio.portfolio.pg.dto.PaymentCallbackDto;
@@ -11,7 +10,6 @@ import com.portfolio.portfolio.pg.repository.r2dbc.TradingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

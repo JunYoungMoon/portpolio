@@ -8,12 +8,12 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "p_user_balances")
+@Table(name = "nplus1_user_balances")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBalance {
+public class Nplus1UserBalance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,5 +30,5 @@ public class UserBalance {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Nplus1User nplus1User;
 }

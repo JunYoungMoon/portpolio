@@ -6,10 +6,15 @@ import com.portfolio.portfolio.ddd.domain.model.vo.Price;
 import com.portfolio.portfolio.ddd.domain.model.vo.Quantity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "ddd_order")
 @Getter
+@NoArgsConstructor
 public class DDDOrder {
     @Id
     private Long orderId;

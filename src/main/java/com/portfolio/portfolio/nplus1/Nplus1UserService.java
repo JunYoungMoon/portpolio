@@ -1,8 +1,8 @@
 package com.portfolio.portfolio.nplus1;
 
-import com.portfolio.portfolio.nplus1.repository.jpa.User;
-import com.portfolio.portfolio.nplus1.repository.jpa.UserBalance;
-import com.portfolio.portfolio.nplus1.repository.jpa.UserRepository;
+import com.portfolio.portfolio.nplus1.repository.jpa.Nplus1User;
+import com.portfolio.portfolio.nplus1.repository.jpa.Nplus1UserBalance;
+import com.portfolio.portfolio.nplus1.repository.jpa.Nplus1UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,12 +10,12 @@ import java.util.List;
 
 @Service
 @Transactional
-public class UserService {
+public class Nplus1UserService {
 
-    private final UserRepository userRepository;
+    private final Nplus1UserRepository nplus1UserRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public Nplus1UserService(Nplus1UserRepository nplus1UserRepository) {
+        this.nplus1UserRepository = nplus1UserRepository;
     }
 
     // 한 사용자의 여러 지갑 조회 (N+1 문제 없음)
@@ -23,17 +23,17 @@ public class UserService {
         System.out.println("\n=== 📍 비교: 한 사용자의 여러 지갑 조회 (N+1 문제 없음) ===");
 
         // 1. 첫 번째 사용자만 조회 (1번 쿼리)
-        List<User> users = userRepository.findAll();
-        if (users.isEmpty()) {
+        List<Nplus1User> nplus1Users = nplus1UserRepository.findAll();
+        if (nplus1Users.isEmpty()) {
             System.out.println("사용자가 없습니다.");
             return;
         }
 
-        User firstUser = users.get(0);
-        System.out.println("조회된 사용자: " + firstUser.getUsername());
+        Nplus1User firstNplus1User = nplus1Users.get(0);
+        System.out.println("조회된 사용자: " + firstNplus1User.getUsername());
 
         // 2. 이 한 사용자의 모든 지갑 조회 (1번 쿼리)
-        List<UserBalance> balances = firstUser.getUserBalances();
+        List<Nplus1UserBalance> balances = firstNplus1User.getNplus1UserBalances();
         System.out.println("이 사용자의 총 지갑 개수: " + balances.size());
 
         // 3. 각 지갑 정보 출력 (추가 쿼리 없음!)
@@ -52,13 +52,13 @@ public class UserService {
         System.out.println("\n=== ❌ N+1 문제 발생 케이스 ===");
 
         // 1. 모든 사용자를 조회 (1번의 쿼리)
-        List<User> users = userRepository.findAll();
-        System.out.println("사용자 조회 완료: " + users.size() + "명");
+        List<Nplus1User> nplus1Users = nplus1UserRepository.findAll();
+        System.out.println("사용자 조회 완료: " + nplus1Users.size() + "명");
 
         // 2. 각 사용자의 잔액을 조회 (N번의 추가 쿼리 발생)
-        for (User user : users) {
-            List<UserBalance> balances = user.getUserBalances();
-            System.out.println("사용자 " + user.getUsername() + "의 잔액 개수: " + balances.size());
+        for (Nplus1User nplus1User : nplus1Users) {
+            List<Nplus1UserBalance> balances = nplus1User.getNplus1UserBalances();
+            System.out.println("사용자 " + nplus1User.getUsername() + "의 잔액 개수: " + balances.size());
 
             // 실제로 데이터에 접근해야 lazy loading이 발생
             balances.forEach(balance ->
@@ -73,12 +73,12 @@ public class UserService {
         System.out.println("\n=== ✅ 해결 방법 1: Fetch Join ===");
 
         // fetch join을 사용하여 한 번의 쿼리로 모든 데이터 조회
-        List<User> users = userRepository.findAllWithBalances();
-        System.out.println("사용자 조회 완료: " + users.size() + "명");
+        List<Nplus1User> nplus1Users = nplus1UserRepository.findAllWithBalances();
+        System.out.println("사용자 조회 완료: " + nplus1Users.size() + "명");
 
-        for (User user : users) {
-            List<UserBalance> balances = user.getUserBalances();
-            System.out.println("사용자 " + user.getUsername() + "의 잔액 개수: " + balances.size());
+        for (Nplus1User nplus1User : nplus1Users) {
+            List<Nplus1UserBalance> balances = nplus1User.getNplus1UserBalances();
+            System.out.println("사용자 " + nplus1User.getUsername() + "의 잔액 개수: " + balances.size());
             balances.forEach(balance ->
                     System.out.println("  - 잔액: " + balance.getTotalBalance())
             );
@@ -91,12 +91,12 @@ public class UserService {
         System.out.println("\n=== ✅ 해결 방법 2: EntityGraph ===");
 
         // @EntityGraph를 사용하여 한 번의 쿼리로 모든 데이터 조회
-        List<User> users = userRepository.findAllWithEntityGraph();
-        System.out.println("사용자 조회 완료: " + users.size() + "명");
+        List<Nplus1User> nplus1Users = nplus1UserRepository.findAllWithEntityGraph();
+        System.out.println("사용자 조회 완료: " + nplus1Users.size() + "명");
 
-        for (User user : users) {
-            List<UserBalance> balances = user.getUserBalances();
-            System.out.println("사용자 " + user.getUsername() + "의 잔액 개수: " + balances.size());
+        for (Nplus1User nplus1User : nplus1Users) {
+            List<Nplus1UserBalance> balances = nplus1User.getNplus1UserBalances();
+            System.out.println("사용자 " + nplus1User.getUsername() + "의 잔액 개수: " + balances.size());
             balances.forEach(balance ->
                     System.out.println("  - 잔액: " + balance.getTotalBalance())
             );
@@ -110,12 +110,12 @@ public class UserService {
         System.out.println("주의: application.yml에 default_batch_fetch_size 설정 필요");
 
         // 일반 조회지만 batch size 설정으로 개선됨
-        List<User> users = userRepository.findAll();
-        System.out.println("사용자 조회 완료: " + users.size() + "명");
+        List<Nplus1User> nplus1Users = nplus1UserRepository.findAll();
+        System.out.println("사용자 조회 완료: " + nplus1Users.size() + "명");
 
-        for (User user : users) {
-            List<UserBalance> balances = user.getUserBalances();
-            System.out.println("사용자 " + user.getUsername() + "의 잔액 개수: " + balances.size());
+        for (Nplus1User nplus1User : nplus1Users) {
+            List<Nplus1UserBalance> balances = nplus1User.getNplus1UserBalances();
+            System.out.println("사용자 " + nplus1User.getUsername() + "의 잔액 개수: " + balances.size());
             balances.forEach(balance ->
                     System.out.println("  - 잔액: " + balance.getTotalBalance())
             );

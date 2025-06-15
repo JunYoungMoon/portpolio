@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_user")
+@Table(name = "nplus1_user")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Nplus1User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,8 +40,8 @@ public class User {
     private String username;
 
     // N+1 문제를 확인하기 위한 OneToMany 관계 설정
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<UserBalance> userBalances = new ArrayList<>();
+    @OneToMany(mappedBy = "nplus1User", fetch = FetchType.LAZY)
+    private List<Nplus1UserBalance> nplus1UserBalances = new ArrayList<>();
 
     public enum UserRole {
         HUB_MANAGER, MASTER

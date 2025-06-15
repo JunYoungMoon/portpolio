@@ -3,12 +3,16 @@ package com.portfolio.portfolio.ddd.domain.model.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "ddd_user_balance")
 @Getter
+@NoArgsConstructor
 public class DDDUserBalance {
     @Id
     private Long id;

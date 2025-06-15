@@ -25,7 +25,8 @@ import java.util.Map;
 @EnableJpaRepositories(
         basePackages = {
                 "com.portfolio.portfolio.nplus1.repository.jpa",
-                "com.portfolio.portfolio.ddd.infrastructure.repository"
+                "com.portfolio.portfolio.ddd.infrastructure.repository",
+                "com.portfolio.portfolio.ai.infrastructure.repository"
         },
         transactionManagerRef = "jpaTransactionManager"
 )
@@ -60,6 +61,9 @@ public class JpaConfig {
                 (dataSource) -> {
                     Map<String, Object> props = new HashMap<>();
                     props.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+                    props.put("hibernate.hbm2ddl.auto", "update");
+                    props.put("hibernate.show_sql", true);
+                    props.put("hibernate.format_sql", true);
                     return props;
                 },
                 null
@@ -75,7 +79,8 @@ public class JpaConfig {
                 .dataSource(dataSource)
                 .packages(
                         "com.portfolio.portfolio.nplus1.repository.jpa",
-                        "com.portfolio.portfolio.ddd.domain.model.entity"
+                        "com.portfolio.portfolio.ddd.domain.model.entity",
+                        "com.portfolio.portfolio.ai.domain.model.entity"
                 )
                 .persistenceUnit("default")
                 .build();
