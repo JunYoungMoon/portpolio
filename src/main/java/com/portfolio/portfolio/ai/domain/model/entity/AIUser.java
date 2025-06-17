@@ -2,13 +2,17 @@ package com.portfolio.portfolio.ai.domain.model.entity;
 
 import com.portfolio.portfolio.ai.domain.model.UserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ai_user")
 @Getter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class AIUser {
 
     @Id
@@ -39,17 +43,6 @@ public class AIUser {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    protected AIUser() {}
-
-    public AIUser(String username, String email, String password, String name) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
 
     // Business Methods
     public boolean isActive() {
