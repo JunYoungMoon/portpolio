@@ -1,4 +1,4 @@
-package com.portfolio.portfolio.ai.domain;
+package com.portfolio.portfolio.ai.domain.repository;
 
 import com.portfolio.portfolio.ai.domain.model.entity.AIUser;
 

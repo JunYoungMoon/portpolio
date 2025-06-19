@@ -1,6 +1,6 @@
 package com.portfolio.portfolio.ai.application;
 
-import com.portfolio.portfolio.ai.domain.UserRepository;
+import com.portfolio.portfolio.ai.domain.repository.UserRepository;
 import com.portfolio.portfolio.ai.domain.model.entity.AIUser;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
