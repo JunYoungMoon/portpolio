@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<div class="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">회원가입</h1>
+        <p class="mt-2 text-gray-600">새 계정을 만들어보세요</p>
+    </div>
+
+    <form th:action="@{/auth/register}" th:object="${registerRequest}" method="post" class="space-y-6">
+        <div>
+            <label for="username" class="block text-sm font-medium text-gray-700">사용자명</label>
+            <input
+                    type="text"
+                    id="username"
+                    th:field="*{username}"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="사용자명을 입력하세요"
+            >
+            <div th:if="${#fields.hasErrors('username')}" class="mt-1 text-sm text-red-600">
+                <span th:each="error : ${#fields.errors('username')}" th:text="${error}"></span>
+            </div>
+        </div>
+
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">이메일</label>
+            <input
+                    type="email"
+                    id="email"
+                    th:field="*{email}"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="이메일을 입력하세요"
+            >
+            <div th:if="${#fields.hasErrors('email')}" class="mt-1 text-sm text-red-600">
+                <span th:each="error : ${#fields.errors('email')}" th:text="${error}"></span>
+            </div>
+        </div>
+
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">이름</label>
+            <input
+                    type="text"
+                    id="name"
+                    th:field="*{name}"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="이름을 입력하세요"
+            >
+            <div th:if="${#fields.hasErrors('name')}" class="mt-1 text-sm text-red-600">
+                <span th:each="error : ${#fields.errors('name')}" th:text="${error}"></span>
+            </div>
+        </div>
+
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">비밀번호</label>
+            <input
+                    type="password"
+                    id="password"
+                    th:field="*{password}"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="비밀번호를 입력하세요"
+            >
+            <div th:if="${#fields.hasErrors('password')}" class="mt-1 text-sm text-red-600">
+                <span th:each="error : ${#fields.errors('password')}" th:text="${error}"></span>
+            </div>
+        </div>
+
+        <div>
+            <button
+                    type="submit"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            >
+                회원가입
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+            이미 계정이 있으신가요?
+            <a th:href="@{/auth/login}" class="font-medium text-blue-600 hover:text-blue-500">
+                로그인
+            </a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

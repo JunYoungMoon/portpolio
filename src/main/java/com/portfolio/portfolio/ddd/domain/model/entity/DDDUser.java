@@ -1,15 +1,17 @@
 package com.portfolio.portfolio.ddd.domain.model.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "ddd_user")
+@Getter
+@NoArgsConstructor
 public class DDDUser {
     @Id
     private Long userId;

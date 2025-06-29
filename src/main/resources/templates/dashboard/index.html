@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대시보드</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+<!-- Navigation -->
+<nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <h1 class="text-xl font-bold text-gray-900">MyApp</h1>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">
+                        안녕하세요, <span th:text="${user.name}" class="font-medium"></span>님!
+                    </span>
+
+                <!-- Spring Security 표준 로그아웃 폼 -->
+                <form th:action="@{/auth/logout}" method="post" class="inline">
+                    <!-- CSRF 비활성화로 인해 토큰 제거 -->
+                    <button
+                            type="submit"
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    >
+                        로그아웃
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto py-6 px-4">
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">대시보드</h2>
+        <p class="mt-1 text-gray-600">환영합니다! 여기서 앱의 주요 기능들을 확인할 수 있습니다.</p>
+    </div>
+
+    <!-- Voice Recognition Card -->
+    <div class="bg-white overflow-hidden shadow rounded-lg mb-6">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">음성 인식</h3>
+
+            <div class="space-y-4">
+                <!-- Voice Controls -->
+                <div class="flex items-center justify-between">
+                    <button id="startVoiceBtn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-sm font-medium flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                        </svg>
+                        음성 인식 시작
+                    </button>
+
+                    <button id="stopVoiceBtn"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md text-sm font-medium flex items-center"
+                            disabled>
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                        </svg>
+                        중지
+                    </button>
+                </div>
+
+                <!-- Status Display -->
+                <div id="voiceStatus" class="p-3 bg-gray-50 rounded-md">
+                    <span class="text-sm text-gray-600">음성 인식 대기 중...</span>
+                </div>
+
+                <!-- Voice Text Display -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">인식된 음성</label>
+                    <textarea id="voiceText"
+                              class="w-full p-3 border border-gray-300 rounded-md"
+                              rows="4"
+                              readonly
+                              placeholder="여기에 인식된 음성이 표시됩니다..."></textarea>
+                </div>
+
+                <!-- Send to Backend Button -->
+                <div class="flex justify-end">
+                    <button id="sendToBackend"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md text-sm font-medium"
+                            disabled>
+                        백엔드로 전송
+                    </button>
+                </div>
+
+                <!-- Response Display -->
+                <div id="backendResponse" class="hidden p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <h4 class="text-sm font-medium text-blue-800 mb-2">백엔드 응답:</h4>
+                    <p id="responseText" class="text-sm text-blue-700"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Info Card -->
+    <div class="bg-white overflow-hidden shadow rounded-lg mb-6">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">사용자 정보</h3>
+
+            <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">사용자명</dt>
+                    <dd class="mt-1 text-sm text-gray-900" th:text="${user.username}"></dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">이름</dt>
+                    <dd class="mt-1 text-sm text-gray-900" th:text="${user.name}"></dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">이메일</dt>
+                    <dd class="mt-1 text-sm text-gray-900" th:text="${user.email}"></dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">권한</dt>
+                    <dd class="mt-1 text-sm text-gray-900" th:text="${user.role}"></dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">계정 상태</dt>
+                    <dd class="mt-1">
+                            <span th:if="${user.active}"
+                                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                활성
+                            </span>
+                        <span th:unless="${user.active}"
+                              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                비활성
+                            </span>
+                    </dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">가입일</dt>
+                    <dd class="mt-1 text-sm text-gray-900" th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}"></dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">빠른 작업</h3>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Voice Recognition Action -->
+                <div class="bg-orange-50 rounded-lg p-4 text-center">
+                    <div class="text-orange-600 mb-2">
+                        <svg class="mx-auto h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-medium text-gray-900">음성 인식</h4>
+                    <p class="mt-1 text-xs text-gray-500">음성 명령 처리</p>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-4 text-center">
+                    <div class="text-blue-600 mb-2">
+                        <svg class="mx-auto h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-medium text-gray-900">프로필 관리</h4>
+                    <p class="mt-1 text-xs text-gray-500">개인정보 수정</p>
+                </div>
+
+                <div class="bg-green-50 rounded-lg p-4 text-center">
+                    <div class="text-green-600 mb-2">
+                        <svg class="mx-auto h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-medium text-gray-900">작업 관리</h4>
+                    <p class="mt-1 text-xs text-gray-500">할 일 목록</p>
+                </div>
+
+                <div class="bg-purple-50 rounded-lg p-4 text-center">
+                    <div class="text-purple-600 mb-2">
+                        <svg class="mx-auto h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-medium text-gray-900">설정</h4>
+                    <p class="mt-1 text-xs text-gray-500">앱 환경설정</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    class VoiceRecognition {
+        constructor() {
+            this.recognition = null;
+            this.isListening = false;
+            this.finalTranscript = '';
+
+            this.startBtn = document.getElementById('startVoiceBtn');
+            this.stopBtn = document.getElementById('stopVoiceBtn');
+            this.statusDiv = document.getElementById('voiceStatus');
+            this.textArea = document.getElementById('voiceText');
+            this.sendBtn = document.getElementById('sendToBackend');
+            this.responseDiv = document.getElementById('backendResponse');
+            this.responseText = document.getElementById('responseText');
+
+            this.init();
+        }
+
+        init() {
+            // Check if browser supports Speech Recognition
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                this.updateStatus('음성 인식을 지원하지 않는 브라우저입니다.', 'error');
+                return;
+            }
+
+            // Initialize Speech Recognition
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            this.recognition = new SpeechRecognition();
+
+            // Configure recognition settings
+            this.recognition.continuous = true;
+            this.recognition.interimResults = true;
+            this.recognition.lang = 'ko-KR';
+
+            // Set up event listeners
+            this.setupEventListeners();
+            this.setupRecognitionEvents();
+        }
+
+        setupEventListeners() {
+            this.startBtn.addEventListener('click', () => this.startListening());
+            this.stopBtn.addEventListener('click', () => this.stopListening());
+            this.sendBtn.addEventListener('click', () => this.sendToBackend());
+        }
+
+        setupRecognitionEvents() {
+            this.recognition.onstart = () => {
+                this.isListening = true;
+                this.updateStatus('음성 인식 중...', 'listening');
+                this.updateButtons();
+            };
+
+            this.recognition.onend = () => {
+                this.isListening = false;
+                this.updateStatus('음성 인식이 종료되었습니다.', 'stopped');
+                this.updateButtons();
+            };
+
+            this.recognition.onerror = (event) => {
+                this.updateStatus(`오류: ${event.error}`, 'error');
+                this.isListening = false;
+                this.updateButtons();
+            };
+
+            this.recognition.onresult = (event) => {
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+
+                    if (event.results[i].isFinal) {
+                        this.finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                this.textArea.value = this.finalTranscript + interimTranscript;
+                this.sendBtn.disabled = this.finalTranscript.trim() === '';
+            };
+        }
+
+        startListening() {
+            if (!this.recognition) return;
+
+            this.finalTranscript = '';
+            this.textArea.value = '';
+            this.hideResponse();
+            this.recognition.start();
+        }
+
+        stopListening() {
+            if (!this.recognition || !this.isListening) return;
+            this.recognition.stop();
+        }
+
+        updateStatus(message, type) {
+            this.statusDiv.innerHTML = `<span class="text-sm ${this.getStatusColor(type)}">${message}</span>`;
+        }
+
+        getStatusColor(type) {
+            switch(type) {
+                case 'listening': return 'text-green-600';
+                case 'error': return 'text-red-600';
+                case 'stopped': return 'text-gray-600';
+                default: return 'text-gray-600';
+            }
+        }
+
+        updateButtons() {
+            this.startBtn.disabled = this.isListening;
+            this.stopBtn.disabled = !this.isListening;
+        }
+
+        async sendToBackend() {
+            const text = this.textArea.value.trim();
+            if (!text) return;
+
+            try {
+                this.sendBtn.disabled = true;
+                this.sendBtn.innerHTML = '전송 중...';
+
+                const response = await fetch('/api/voice/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    this.showResponse(data.message || '성공적으로 처리되었습니다.');
+                } else {
+                    throw new Error('서버 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                this.showResponse(`오류: ${error.message}`, true);
+            } finally {
+                this.sendBtn.disabled = false;
+                this.sendBtn.innerHTML = '백엔드로 전송';
+            }
+        }
+
+        showResponse(message, isError = false) {
+            this.responseDiv.className = `p-3 border rounded-md ${isError ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`;
+            this.responseText.className = `text-sm ${isError ? 'text-red-700' : 'text-blue-700'}`;
+            this.responseText.textContent = message;
+            this.responseDiv.classList.remove('hidden');
+        }
+
+        hideResponse() {
+            this.responseDiv.classList.add('hidden');
+        }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        new VoiceRecognition();
+    });
+</script>
+</body>
+</html>

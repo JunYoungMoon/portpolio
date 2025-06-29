@@ -1,5 +1,13 @@
 server:
   port: 19093
+  servlet:
+    session:
+      timeout: 3600s # 1시간
+      cookie:
+        name: JSESSIONID
+        http-only: true
+        secure: false # 개발환경에서는 false, 운영환경에서는 true
+        same-site: lax
 
 spring:
   application:
@@ -16,13 +24,15 @@ spring:
     username: ${DB_NAME}
     password: ${DB_PASSWORD}
 
-  jpa:
-    show-sql: true  # 🔥 SQL 쿼리 출력
-    properties:
-      hibernate:
-        show-sql: true
-        format-sql: true
-        highlight_sql: true  # 🔥 SQL 하이라이팅
+  thymeleaf:
+    cache: false
+    suffix: .html
+    prefix: classpath:/templates/
+    encoding: UTF-8
+
+  web:
+    resources:
+      static-locations: classpath:/static/
 
   flyway:
     enabled: true
