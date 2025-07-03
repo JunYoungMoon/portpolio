@@ -5,7 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class DiscountPolicy {
-    private List<DiscountCondition> conditions = new ArrayList<>();
+    private final List<DiscountCondition> conditions;
+    private DiscountPolicy discountPolicy;
+
+    public void changeDiscountPolicy(DiscountPolicy discountPolicy) {
+        this.discountPolicy = discountPolicy;
+    }
 
     public DiscountPolicy(DiscountCondition... conditions) {
         this.conditions = Arrays.asList(conditions);
