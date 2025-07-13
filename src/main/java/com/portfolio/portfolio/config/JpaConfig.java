@@ -26,7 +26,8 @@ import java.util.Map;
         basePackages = {
                 "com.portfolio.portfolio.nplus1.repository.jpa",
                 "com.portfolio.portfolio.ddd.infrastructure.repository",
-                "com.portfolio.portfolio.ai.infrastructure.repository"
+                "com.portfolio.portfolio.ai.infrastructure.repository",
+                "com.portfolio.portfolio.giftorder.repository"
         },
         transactionManagerRef = "jpaTransactionManager"
 )
@@ -80,7 +81,8 @@ public class JpaConfig {
                 .packages(
                         "com.portfolio.portfolio.nplus1.repository.jpa",
                         "com.portfolio.portfolio.ddd.domain.model.entity",
-                        "com.portfolio.portfolio.ai.domain.model.entity"
+                        "com.portfolio.portfolio.ai.domain.model.entity",
+                        "com.portfolio.portfolio.giftorder.entity"
                 )
                 .persistenceUnit("default")
                 .build();

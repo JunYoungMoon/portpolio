@@ -26,7 +26,7 @@ public class HlsStreamingController {
     private RestTemplate restTemplate;
 
     // Handle M3U8 requests
-    @GetMapping("/**")
+    @GetMapping("/m3u8")
     public ResponseEntity<?> handleM3u8Request(HttpServletRequest request) {
         String requestUrl = request.getRequestURI();
         log.info("Request URL: {}", requestUrl);
