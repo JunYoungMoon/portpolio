@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{giftorder/layout}">
+<head>
+    <title>고객 정보 입력</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🎁 선물세트 주문</h1>
+            <p>고객 정보를 입력해주세요</p>
+        </div>
+
+        <form th:action="@{/customer/verify}" method="post" th:object="${customerForm}">
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" id="name" th:field="*{name}" required
+                       placeholder="이름을 입력하세요">
+                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">휴대폰 번호</label>
+                <input type="tel" id="phone" th:field="*{phone}" required
+                       placeholder="010-1234-5678" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
+                <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+            </div>
+
+            <button type="submit" class="btn btn-full">다음 단계</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

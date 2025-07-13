@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{giftorder/layout}">
+<head>
+    <title>선물세트 선택</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="customer-info">
+        <span th:text="${customer.name}">홍길동</span>님 환영합니다!
+        (<span th:text="${customer.phone}">010-1234-5678</span>)
+    </div>
+
+    <div class="content">
+        <div class="products">
+            <!-- 갈비 선물세트 -->
+            <div class="product-card">
+                <img src="/images/galbi-set.jpg" alt="갈비 선물세트" class="product-image"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="product-image-placeholder" style="display:none;">🥩</div>
+
+                <div class="product-info">
+                    <div class="product-name">프리미엄 갈비 선물세트</div>
+                    <div class="product-description">최고급 한우 갈비로 만든 프리미엄 선물세트입니다. 명절과 특별한 날 선물로 완벽합니다.</div>
+                    <div class="product-price">50,000원</div>
+
+                    <!-- 이미 장바구니에 담긴 수량 표시 -->
+                    <div th:if="${cart.galbiQuantity > 0}" class="cart-status">
+                        🛒 장바구니에 <span th:text="${cart.galbiQuantity}">1</span>개 담김
+                    </div>
+
+                    <div class="quantity-controls">
+                        <span class="quantity-label">추가 수량</span>
+                        <div class="quantity-selector">
+                            <button type="button" class="quantity-btn" onclick="decreaseQuantity('galbi')">-</button>
+                            <span class="quantity-display" id="galbi-quantity">0</span>
+                            <button type="button" class="quantity-btn" onclick="increaseQuantity('galbi')">+</button>
+                        </div>
+                    </div>
+
+                    <button class="add-to-cart" onclick="addToCart('galbi')" id="galbi-add-btn" disabled>
+                        장바구니에 추가
+                    </button>
+                </div>
+            </div>
+
+            <!-- 스팸 선물세트 -->
+            <div class="product-card">
+                <img src="/images/spam-set.jpg" alt="스팸 선물세트" class="product-image"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="product-image-placeholder" style="display:none;">🥫</div>
+
+                <div class="product-info">
+                    <div class="product-name">프리미엄 스팸 선물세트</div>
+                    <div class="product-description">정성스럽게 선별한 프리미엄 스팸 선물세트입니다. 실용적이고 맛있는 선물입니다.</div>
+                    <div class="product-price">30,000원</div>
+
+                    <!-- 이미 장바구니에 담긴 수량 표시 -->
+                    <div th:if="${cart.spamQuantity > 0}" class="cart-status">
+                        🛒 장바구니에 <span th:text="${cart.spamQuantity}">1</span>개 담김
+                    </div>
+
+                    <div class="quantity-controls">
+                        <span class="quantity-label">추가 수량</span>
+                        <div class="quantity-selector">
+                            <button type="button" class="quantity-btn" onclick="decreaseQuantity('spam')">-</button>
+                            <span class="quantity-display" id="spam-quantity">0</span>
+                            <button type="button" class="quantity-btn" onclick="increaseQuantity('spam')">+</button>
+                        </div>
+                    </div>
+
+                    <button class="add-to-cart" onclick="addToCart('spam')" id="spam-add-btn" disabled>
+                        장바구니에 추가
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-footer">
+        <div class="cart-info">
+            장바구니: <span id="cart-count" th:text="${cart.galbiQuantity + cart.spamQuantity}">0</span>개 상품
+        </div>
+        <button class="go-cart-btn"
+                onclick="location.href='/cart'"
+                id="cart-btn"
+                th:disabled="${cart.isEmpty()}">
+            장바구니 보기
+        </button>
+    </div>
+</div>
+
+<script layout:fragment="scripts">
+    // 서버에서 현재 장바구니 상태를 가져와서 초기화
+    let cart = {
+        galbi: /*[[${cart.galbiQuantity}]]*/ 0,
+        spam: /*[[${cart.spamQuantity}]]*/ 0
+    };
+    let quantities = { galbi: 0, spam: 0 };
+
+    console.log("페이지 로드 시 장바구니 상태:", cart);
+
+    // 페이지 로드 시 장바구니 표시 업데이트
+    window.addEventListener('DOMContentLoaded', function() {
+        updateCartDisplay();
+    });
+
+    function increaseQuantity(product) {
+        if (quantities[product] < 20) {
+            quantities[product]++;
+            updateQuantityDisplay(product);
+        }
+    }
+
+    function decreaseQuantity(product) {
+        if (quantities[product] > 0) {
+            quantities[product]--;
+            updateQuantityDisplay(product);
+        }
+    }
+
+    function updateQuantityDisplay(product) {
+        document.getElementById(product + '-quantity').textContent = quantities[product];
+        document.getElementById(product + '-add-btn').disabled = quantities[product] === 0;
+    }
+
+    function addToCart(product) {
+        if (quantities[product] > 0) {
+            cart[product] += quantities[product]; // 기존 수량에 추가
+            quantities[product] = 0;
+            updateQuantityDisplay(product);
+            updateCartDisplay();
+
+            // 서버에 즉시 동기화
+            goToCart();
+        }
+    }
+
+    function updateCartDisplay() {
+        const totalItems = cart.galbi + cart.spam;
+        document.getElementById('cart-count').textContent = totalItems;
+        document.getElementById('cart-btn').disabled = totalItems === 0;
+    }
+
+    function goToCart() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/cart';
+
+        Object.keys(quantities).forEach(key => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key + 'Quantity';
+            input.value = quantities[key];
+            form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - 선물세트 주문">선물세트 주문</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
+</head>
+<body>
+<!-- 고정 헤더 -->
+<header class="app-header">
+    <img src="/images/logo.png" alt="Company Logo" class="logo"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+    <span style="display:none; font-size: 24px;">🎁</span>
+    <div class="company-name">선물세트 주문</div>
+</header>
+
+<!-- 페이지 콘텐츠 -->
+<main layout:fragment="content">
+    <!-- 각 페이지의 내용이 여기에 들어감 -->
+</main>
+
+<!-- 공통 스크립트 -->
+<script layout:fragment="scripts">
+    <!-- 각 페이지별 추가 스크립트 -->
+</script>
+</body>
+</html>
