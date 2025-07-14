@@ -18,4 +18,14 @@ public class Cart {
     public boolean isEmpty() {
         return galbiQuantity == 0 && spamQuantity == 0;
     }
+
+    public int getTotalItemCount() {
+        return galbiQuantity + spamQuantity;
+    }
+
+    public void clear() {
+        this.galbiQuantity = 0;
+        this.spamQuantity = 0;
+        this.totalAmount = 0;
+    }
 }

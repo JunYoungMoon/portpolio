@@ -1,6 +1,5 @@
 package com.portfolio.portfolio.giftorder.controller;
 
-import com.portfolio.portfolio.giftorder.dto.CartUpdateRequest;
 import com.portfolio.portfolio.giftorder.dto.CustomerForm;
 import com.portfolio.portfolio.giftorder.dto.OrderForm;
 import com.portfolio.portfolio.giftorder.entity.Cart;
@@ -12,10 +11,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
 
@@ -50,8 +48,7 @@ public class GiftOrderController {
     @PostMapping("/customer/verify")
     public String verifyCustomer(@Valid @ModelAttribute CustomerForm customerForm,
                                  BindingResult bindingResult,
-                                 HttpSession session,
-                                 RedirectAttributes redirectAttributes) {
+                                 HttpSession session) {
 
         if (bindingResult.hasErrors()) {
             return "giftorder/login";
@@ -84,33 +81,11 @@ public class GiftOrderController {
             return "redirect:/login";
         }
 
-        Cart cart = getCartFromSession(session); // 장바구니 정보 추가
-
-        model.addAttribute("customer", customer);
-        model.addAttribute("cart", cart); // 장바구니 정보 전달
-        return "giftorder/products";
-    }
-
-    @PostMapping("/cart")
-    public String addToCart(@RequestParam int galbiQuantity,
-                            @RequestParam int spamQuantity,
-                            HttpSession session) {
-
-        Customer customer = (Customer) session.getAttribute("customer");
-        if (customer == null) {
-            return "redirect:/login";
-        }
-
         Cart cart = getCartFromSession(session);
 
-        // 기존 수량에 추가하는 방식으로 변경
-        cart.setGalbiQuantity(cart.getGalbiQuantity() + galbiQuantity);
-        cart.setSpamQuantity(cart.getSpamQuantity() + spamQuantity);
-        cart.calculateTotal();
-
-        session.setAttribute("cart", cart);
-
-        return "redirect:/cart";
+        model.addAttribute("customer", customer);
+        model.addAttribute("cart", cart);
+        return "giftorder/products";
     }
 
     @GetMapping("/cart")
@@ -120,29 +95,11 @@ public class GiftOrderController {
             return "redirect:/login";
         }
 
-        Cart cart = (Cart) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new Cart();
-            session.setAttribute("cart", cart);
-        }
+        Cart cart = getCartFromSession(session);
 
         model.addAttribute("customer", customer);
         model.addAttribute("cart", cart);
         return "giftorder/cart";
-    }
-
-    @PostMapping("/cart/update")
-    @ResponseBody
-    public String updateCart(@RequestBody CartUpdateRequest request,
-                             HttpSession session) {
-
-        Cart cart = getCartFromSession(session);
-        cart.setGalbiQuantity(request.getGalbi());
-        cart.setSpamQuantity(request.getSpam());
-        cart.calculateTotal();
-        session.setAttribute("cart", cart);
-
-        return "success";
     }
 
     @GetMapping("/address")
@@ -217,19 +174,4 @@ public class GiftOrderController {
 
         return "giftorder/complete";
     }
-
-//    @GetMapping("/order/status")
-//    public String orderStatus(@RequestParam String orderNumber, Model model) {
-//        Order order = orderService.findByOrderNumber(orderNumber);
-//        if (order == null) {
-//            return "redirect:/";
-//        }
-//
-//        Customer customer = customerService.findById(order.getCustomerId());
-//
-//        model.addAttribute("order", order);
-//        model.addAttribute("customer", customer);
-//
-//        return "/giftorder/order-status"; // 별도 구현 필요
-//    }
 }
