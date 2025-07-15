@@ -5,6 +5,7 @@ import com.portfolio.portfolio.giftorder.dto.OrderForm;
 import com.portfolio.portfolio.giftorder.entity.Cart;
 import com.portfolio.portfolio.giftorder.entity.Customer;
 import com.portfolio.portfolio.giftorder.entity.Order;
+import com.portfolio.portfolio.giftorder.service.CartService;
 import com.portfolio.portfolio.giftorder.service.CustomerService;
 import com.portfolio.portfolio.giftorder.service.OrderService;
 import jakarta.servlet.http.HttpSession;
@@ -23,15 +24,11 @@ public class GiftOrderController {
 
     private final CustomerService customerService;
     private final OrderService orderService;
+    private final CartService cartService;
 
     // 공통 메서드: 세션에서 장바구니 가져오기
-    private Cart getCartFromSession(HttpSession session) {
-        Cart cart = (Cart) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new Cart();
-            session.setAttribute("cart", cart);
-        }
-        return cart;
+    private Cart getCartFromDatabase(Long customerId) {
+        return cartService.getOrCreateCart(customerId);
     }
 
     @GetMapping("/")
@@ -67,10 +64,6 @@ public class GiftOrderController {
         // 세션에 고객 정보 저장
         session.setAttribute("customer", customer);
 
-        // 장바구니 초기화
-        Cart cart = new Cart();
-        session.setAttribute("cart", cart);
-
         return "redirect:/products";
     }
 
@@ -81,7 +74,7 @@ public class GiftOrderController {
             return "redirect:/login";
         }
 
-        Cart cart = getCartFromSession(session);
+        Cart cart = getCartFromDatabase(customer.getId());
 
         model.addAttribute("customer", customer);
         model.addAttribute("cart", cart);
@@ -95,7 +88,7 @@ public class GiftOrderController {
             return "redirect:/login";
         }
 
-        Cart cart = getCartFromSession(session);
+        Cart cart = getCartFromDatabase(customer.getId());
 
         model.addAttribute("customer", customer);
         model.addAttribute("cart", cart);
@@ -129,13 +122,14 @@ public class GiftOrderController {
                                 Model model) {
 
         Customer customer = (Customer) session.getAttribute("customer");
-        Cart cart = (Cart) session.getAttribute("cart");
 
         if (customer == null) {
             return "redirect:/login";
         }
 
-        if (cart == null || cart.isEmpty()) {
+        Cart cart = getCartFromDatabase(customer.getId());
+
+        if (cart.isEmpty()) {
             return "redirect:/products";
         }
 
@@ -166,8 +160,8 @@ public class GiftOrderController {
         // 주문 저장
         orderService.save(order);
 
-        // 세션 정리
-        session.removeAttribute("cart");
+        // 주문 완료 후 장바구니 삭제
+        cartService.deleteCart(customer.getId());
 
         model.addAttribute("customer", customer);
         model.addAttribute("order", order);
